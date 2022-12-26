@@ -1,0 +1,51 @@
+    public static final HashMap<String, Person> persons = new HashMap<>();
+    private static void createNewPersonList() throws Exception {
+        Gson gson = new GsonBuilder().setPrettyPrinting().create();
+        Scanner scanner = new Scanner(System.in);
+        String uniqueID = UUID.randomUUID().toString();
+        String personStorageFile = readFileAsString(USERS_FILE);
+//        System.out.println("Please enter your first and last name along with your age.");
+
+
+        // Read the persons field from the Storage object
+        Storage storage = gson.fromJson(personStorageFile, Storage.class);
+        HashMap<String, Person> persons = storage.storedPersons;
+
+        // Add the new person to the list
+        String firstName = scanner.next();
+        String lastName = scanner.next();
+        int age = scanner.nextInt();
+
+        if (firstName.length() > 18 || lastName.length() > 18) {
+            System.out.println("Your first name is too long.");
+        }
+        if (firstName.length() < 3 || lastName.length() < 3) {
+            System.out.println("Your last name is too short.");
+        }
+        if (age < 0) {
+            System.out.println("Please enter a positive or neutral number");
+        }
+        else {
+            System.out.println(persons);
+            persons.put(uniqueID, new Person(firstName, lastName, age));
+        }
+
+
+        // Serialize the updated list to JSON
+        final String updatedJson = gson.toJson(storage);
+        Type personMapType = new TypeToken<Map<String, Person>>(){}.getType();
+        Map<String, Person> nameEmployeeMap = gson.fromJson(personStorageFile, personMapType);
+
+        // Write the updated JSON to the file
+        try {
+            FileWriter fileWriter = new FileWriter(USERS_FILE);
+            fileWriter.write(updatedJson);
+            fileWriter.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static String readFileAsString(String file) throws Exception {
+        return new String(Files.readAllBytes(Paths.get(file)));
+    }
