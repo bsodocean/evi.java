@@ -18,21 +18,10 @@ public class Manager {
     public static Gson gson = new GsonBuilder().setPrettyPrinting().create();
     public static Scanner scannerIn = new Scanner(System.in);
 
-    private static final String ADD_NEW_USER = "Add New User";
-    private static final String LIST_ALL_USER = "List All Users";
-    private static final String EDIT_USER = "Edit User";
-    private static final String DELETE_USER = "Delete User";
-    private static final String EXIT_APP = "Exit App";
-
-    private static final String EDIT_FIRST_NAME = "Change First Name";
-    private static final String EDIT_LAST_NAME = "Change Last Name";
-    private static final String EDIT_AGE_ = "Change Age";
-
-    private static final String USERS_FILE = "personstorage.json";
+    private static final String USERS_FILE = "Storage/person-storage.json";
     private static String personStorageFile;
     private static boolean matchFound = false;
     public static HashMap<String, Person> persons = new HashMap<>();
-
 
     static {
         try {
@@ -43,12 +32,21 @@ public class Manager {
             throw new RuntimeException(e);
         }
     }
+    public static String readFileAsString(String file) throws Exception {
+        return new String(Files.readAllBytes(Paths.get(file)));
+    }
 
     static void listOptions(String @NotNull [] options) {
         for (String option : options) {
             System.out.println(option);
         }
         System.out.print("Choose your option: ");
+    }
+
+    static void readList(){
+        Type readPersonMap = new TypeToken<Map<String, Person>>() {}.getType();
+        Map<String, Person> storage = gson.fromJson(personStorageFile, readPersonMap);
+        Map<String, Person> persons = storage;
     }
 
     static void createNewPersonList() throws Exception {
@@ -95,9 +93,6 @@ public class Manager {
         }
     }
 
-    public static String readFileAsString(String file) throws Exception {
-        return new String(Files.readAllBytes(Paths.get(file)));
-    }
 
 
     static void deleteUser() {
@@ -124,7 +119,7 @@ public class Manager {
         }
     }
 
-    public static void clearMap() {
+    public static void clearList() {
         System.out.println(persons.toString());
         persons.clear();
         final String updated = gson.toJson(persons);
@@ -146,14 +141,13 @@ public class Manager {
         Map<String, Person> storage = gson.fromJson(personStorageFile, readPersonMap);
         Map<String, Person> persons = storage;
 
-
         for (String key : persons.keySet()) {
             // Check if the input matches the last 4 characters of the key
             if (key.endsWith(input) && input.length() == 4) {
                 Person person = persons.get(key);
                 System.out.println("What would you like to edit about this user's name?");
-                String[] optionsManipulation = {"1 => " + EDIT_FIRST_NAME, "2 => " + EDIT_LAST_NAME, "3 => " + EDIT_AGE_, "4 => Go back", "5 => Save changes."};
-                String[] options = {"1 => " + ADD_NEW_USER, "2 => " + DELETE_USER, "3 => " + EDIT_USER, "4 => " + LIST_ALL_USER, "5 => " + "Clear list", "6 => " + EXIT_APP};
+                String[] optionsManipulation = {"1 => Change First Name", "2 => Change Last Name", "3 => Change Age", "4 => Go back", "5 => Save changes."};
+                String[] COMMANDS = {"1 => Add New User", "2 => Delete User", "3 => Edit User", "4 => List All Users", "5 => Clear list", "6 => Exit App"};
                 int option = 1;
                 while (option != 4) {
                     listOptions(optionsManipulation);
@@ -176,7 +170,7 @@ public class Manager {
                                 int newAge = scannerIn.nextInt();
                                 person.setAge(newAge);
                             }
-                            case 4 -> listOptions(options);
+                            case 4 -> listOptions(COMMANDS);
                             case 5 -> {
                                 Type personMapType = new TypeToken<Map<String, Person>>() {
                                 }.getType();
@@ -198,7 +192,7 @@ public class Manager {
                             System.out.println("Match not found, please try again.");
                         }
                     } catch (InputMismatchException ex) {
-                        System.out.println("Please enter an integer value between 1 " + options.length);
+                        System.out.println("Please enter an integer value between 1 " + COMMANDS.length);
                         ex.printStackTrace();
                         scannerIn.next();
                     } catch (Exception ex) {

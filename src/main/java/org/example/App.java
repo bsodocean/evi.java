@@ -7,20 +7,12 @@ import java.util.*;
 import static org.example.Manager.*;
 
 public class App {
-
-    private static final String ADD_NEW_USER = "Add New User";
-    private static final String LIST_ALL_USER = "List All Users";
-    private static final String EDIT_USER = "Edit User";
-    private static final String DELETE_USER = "Delete User";
-    private static final String EXIT_APP = "Exit App";
-
-    private static final String EDIT_FIRST_NAME = "Change First Name";
-    private static final String EDIT_LAST_NAME = "Change Last Name";
-    private static final String EDIT_AGE_ = "Change Age";
+    static String[] COMMANDS = {"1 => Add New User", "2 => Delete User", "3 => Edit User", "4 => List All Users", "5 => Clear list", "6 => Exit App"};
 
     public static void main( String[] args ) {
+
         try {
-        Path path = Paths.get("personstorage.json");
+        Path path = Paths.get("Storage/person-storage.json");
             Path createdFilePath = Files.createFile(path);
             System.out.println("Created a storage file: "  + createdFilePath);
             String curlyBrace = "{}";
@@ -32,11 +24,9 @@ public class App {
 
         }
 
-
-        String[] options = {"1 => " + ADD_NEW_USER,"2 => "+ DELETE_USER, "3 => " + EDIT_USER,"4 => " + LIST_ALL_USER, "5 => " + "Clear list", "6 => " + EXIT_APP };
         int option = 1;
         while (option != 6) {
-            listOptions(options);
+            listOptions(COMMANDS);
             try {
                 option = scannerIn.nextInt();
                 switch(option) {
@@ -44,11 +34,10 @@ public class App {
                     case 2 -> deleteUser();
                     case 3 -> editUser();
                     case 4 -> listAllUsers();
-                    case 5 -> clearMap();
-                    case 6 -> System.exit(0);
+                    case 5 -> clearList();
                 }
             } catch (InputMismatchException ex) {
-                System.out.println("Please enter an integer value between 1 " + options.length);
+                System.out.println("Please enter an integer value between 1 " + COMMANDS.length);
                 ex.printStackTrace();
                 scannerIn.next();
             } catch (Exception ex) {
@@ -56,5 +45,6 @@ public class App {
                 scannerIn.next();
             }
         }
+
     }
 }
