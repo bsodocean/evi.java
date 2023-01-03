@@ -1,19 +1,12 @@
 package org.example;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.reflect.TypeToken;
-import org.jetbrains.annotations.NotNull;
-
 import java.io.*;
-import java.lang.reflect.Type;
 import java.nio.file.*;
 import java.util.*;
 
 import static org.example.Manager.*;
 
 public class App {
-
 
     private static final String ADD_NEW_USER = "Add New User";
     private static final String LIST_ALL_USER = "List All Users";
